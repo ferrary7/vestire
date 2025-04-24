@@ -1,36 +1,160 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Vestire - Digital Closet Application
+
+Vestire is a comprehensive digital closet application that allows you to organize your wardrobe, create outfits, and receive AI-powered style recommendations.
+
+## Features
+
+### Clothing Management
+- Image upload with automatic background removal
+- Category, color, and season tagging
+- Interactive catalog with filtering and search capabilities
+
+### Outfit Creation
+- Drag-and-drop canvas for combining clothing items
+- Save and organize outfit combinations
+- Track relationships between clothing items and outfits
+
+### AI-Powered Recommendations
+- Get outfit suggestions based on your mood
+- Swipe interface for browsing recommendations
+- Save favorite recommendations to your outfit collection
+
+## Technologies Used
+
+- **Framework**: Next.js 15 with App Router
+- **State Management**: Zustand with localStorage persistence
+- **Styling**: Tailwind CSS
+- **AI Services**:
+  - Replicate API for background removal (rembg model)
+  - Anthropic Claude API for outfit recommendations
+- **Interactions**:
+  - React DnD for drag-and-drop functionality
+  - React Swipeable for gesture-based interactions
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js (v18 or later)
+- API keys for:
+  - [Replicate](https://replicate.com/) - For background removal
+  - [Anthropic Claude](https://www.anthropic.com/) - For AI outfit recommendations
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/vestire.git
+cd vestire
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+3. Create a `.env.local` file in the root directory with your API keys:
+```
+REPLICATE_API_KEY=your-replicate-api-key
+CLAUDE_API_KEY=your-claude-api-key
+NEXT_PUBLIC_APP_NAME=Vestire - Digital Closet
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Start the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-To learn more about Next.js, take a look at the following resources:
+## Usage Guide
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Adding Clothing Items
+1. Navigate to the "Add Item" page
+2. Upload an image from your device
+3. Fill in the details (category, description, color, season)
+4. Click "Add to Closet" to save the item
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Creating Outfits
+1. Go to the "Outfits" page
+2. Name your outfit and add a description
+3. Drag clothing items from the palette to the canvas
+4. Position items as desired
+5. Click "Save Outfit" to add it to your collection
 
-## Deploy on Vercel
+### Getting Recommendations
+1. Visit the "Recommendations" page
+2. Choose your current mood from the dropdown
+3. Click "Generate Outfit Ideas"
+4. Swipe right to save outfits you like, left to skip
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/                 # Next.js App Router pages
+│   ├── api/             # API routes for backend functionality
+│   ├── add/             # Add clothing item page
+│   ├── outfits/         # Outfit creation and management page
+│   └── recommendations/ # AI recommendations page
+├── components/          # React components
+│   ├── Clothing/        # Clothing-related components
+│   ├── Outfits/         # Outfit-related components
+│   ├── Recommendations/ # Recommendation-related components
+│   └── UI/              # Shared UI components
+├── lib/                 # Utility functions and shared logic
+│   ├── store/           # Zustand store
+│   └── utils/           # Helper functions
+└── styles/              # CSS styles
+```
+
+## API Documentation
+
+### `/api/rembg`
+Removes the background from clothing images using Replicate's rembg model.
+
+**Request:**
+- `POST /api/rembg`
+- Body: `{ image: "base64-encoded-image-data" }`
+
+**Response:**
+```json
+{
+  "success": true,
+  "imageUrl": "https://replicate.delivery/pbxt/12345..."
+}
+```
+
+### `/api/recommendations`
+Generates outfit recommendations based on existing clothing items.
+
+**Request:**
+- `POST /api/recommendations`
+- Body: `{ items: [...clothingItems], mood: "casual" }`
+
+**Response:**
+```json
+{
+  "success": true,
+  "recommendations": [
+    {
+      "name": "Weekend Casual",
+      "items": ["item-id-1", "item-id-2"],
+      "description": "A comfortable outfit perfect for weekends",
+      "occasion": "Casual outings"
+    },
+    ...
+  ]
+}
+```
+
+## License
+
+MIT
+
+## Acknowledgements
+
+- [Replicate](https://replicate.com/) for the background removal API
+- [Anthropic](https://www.anthropic.com/) for the Claude AI API
+- [Next.js](https://nextjs.org/) for the framework
+- [Tailwind CSS](https://tailwindcss.com/) for styling
