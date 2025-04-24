@@ -3,15 +3,26 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import useClosetStore from '@/lib/store/closetStore';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 /**
  * Component to display the list of saved outfits
  */
 export default function OutfitList() {
-  const { outfits, clothingItems, removeOutfit, isLoading } = useClosetStore();
+  const { outfits, clothingItems, removeOutfit, isLoading, user } = useClosetStore();
   const [showConfirmDelete, setShowConfirmDelete] = useState(null);
   const [expandedOutfit, setExpandedOutfit] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!session && !user) {
+      router.push('/auth/signin');
+    }
+  }, [session, user, router]);
 
   // Get clothing items for an outfit
   const getOutfitItems = (outfitItemIds) => {
@@ -30,6 +41,11 @@ export default function OutfitList() {
       setTimeout(() => setDeleteError(null), 3000);
     }
   };
+
+  // If not authenticated, show loading or redirect
+  if (!session && !user) {
+    return null; // Will be redirected in the useEffect
+  }
 
   return (
     <div className="space-y-6">

@@ -28,7 +28,19 @@ const useClosetStore = create(
       user: null,
       
       // Set user data from session
-      setUser: (user) => set({ user }),
+      setUser: (user) => {
+        if (user) {
+          set({ user });
+        } else {
+          // Clear user data when logging out
+          set({ 
+            user: null,
+            clothingItems: [],
+            outfits: [],
+            recommendations: []
+          });
+        }
+      },
       
       // Initialize data from MongoDB when user logs in
       initializeUserData: async () => {
@@ -62,6 +74,16 @@ const useClosetStore = create(
         } finally {
           set(state => ({ isLoading: { ...state.isLoading, fetch: false } }));
         }
+      },
+      
+      // Clear all user data (used when logging out)
+      clearUserData: () => {
+        set({
+          clothingItems: [],
+          outfits: [],
+          recommendations: [],
+          user: null
+        });
       },
       
       // Actions for clothing items

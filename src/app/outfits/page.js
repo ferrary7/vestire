@@ -6,9 +6,20 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import OutfitCanvas from '@/components/Outfits/OutfitCanvas';
 import OutfitList from '@/components/Outfits/OutfitList';
+import { useRouter } from 'next/navigation';
+import useClosetStore from '@/lib/store/closetStore';
 
 export default function OutfitsPage() {
+  const { user } = useClosetStore();
+  const router = useRouter();
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    // Redirect to sign in page if user is not authenticated
+    if (!user) {
+      router.push('/auth/signin');
+    }
+  }, [user, router]);
 
   useEffect(() => {
     // Check if the device is a touch device
@@ -18,6 +29,18 @@ export default function OutfitsPage() {
     
     setIsTouchDevice(touchDevice);
   }, []);
+
+  // If not authenticated, show loading or return null
+  if (!user) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-2">Authentication Required</h2>
+          <p className="text-gray-500 dark:text-gray-400">Redirecting to sign in page...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Choose the backend based on the device type
   const backend = isTouchDevice ? TouchBackend : HTML5Backend;
